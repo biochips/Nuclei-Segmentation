@@ -117,14 +117,6 @@ ax.set_title("Nuclei Area")
 
 ```
 
-
-
-
-    Text(0.5, 1.0, 'Nuclei Area')
-
-
-
-
     
 ![png](output_4_1.png)
     
