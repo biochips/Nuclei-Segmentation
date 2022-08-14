@@ -20,7 +20,8 @@ from skimage.measure import regionprops
 from skimage.color import rgb2gray
 ```
 
-Load images from the paper.  Just the three HepG2 images for this example.
+Load images from the paper.  To get individual images, I cropped the HepG2 images and saved as 8-bit grayscale images.  
+
 ```python
 #First, load in images.
 #We have for this example: nuclear staining and BrdU staining
