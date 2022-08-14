@@ -1,17 +1,10 @@
 Nuclei-Segmentation: Using Cellpose to Segment Nuclei and Measure BrdU Incorporation
 
 
-Project Background:  This example is using representative images from a figure in Wei _et. al. _(full citation below).  In this example, the authors measured the changes in proliferation in response to chemotherapuetics using BrdU incorporation. 
+Project Background:  This example is using representative images from a figure in Q Wei, et al. "Design, Synthesis, and In Vitro and In Vivo Biological Studies of a 3′-Deoxythymidine Conjugate that Potentially Kills Cancer Cells Selectively." December 2012PLoS ONE 7(12):e52199. In this example, the authors measured the changes in proliferation in response to chemotherapuetics using BrdU incorporation. The goal is to identify and count the cells that are BrdU postiive from the nuclear staining and BrdU images.  
 
-```python
-'''
-Overall Goal: Quantify number of cells that are Brdu positive from nuclear staining.  
-We will segment the nuceli, then meausre the BrdU stianing intensity for each nucleus.
+The figure we will be using for representative images is here: ![png](BrdU_representative.png)
 
-Using images from Q Wei, et al. "Design, Synthesis, and In Vitro and In Vivo Biological Studies of a 
-3′-Deoxythymidine Conjugate that Potentially Kills Cancer Cells Selectively." December 2012PLoS ONE 7(12):e52199.
-'''
-```
 
 Start with everything you will need to import for this example.
 ```python
