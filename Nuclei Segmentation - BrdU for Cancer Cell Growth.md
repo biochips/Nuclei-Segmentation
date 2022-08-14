@@ -1,14 +1,19 @@
+Nuclei-Segmentation: Using Cellpose to Segment Nuclei and Measure BrdU Incorporation
+
+
+Project Background:  This example is using representative images from a figure in Wei _et. al. _(full citation below).  In this example, the authors measured the changes in proliferation in response to chemotherapuetics using BrdU incorporation. 
+
 ```python
 '''
 Overall Goal: Quantify number of cells that are Brdu positive from nuclear staining.  
-We will segment the nuceli, then meausre the Ki67 stianing intensity for each nucleus.
+We will segment the nuceli, then meausre the BrdU stianing intensity for each nucleus.
 
-Using images from Q Wei, et al. "CDesign, Synthesis, and In Vitro and In Vivo Biological Studies of a 
+Using images from Q Wei, et al. "Design, Synthesis, and In Vitro and In Vivo Biological Studies of a 
 3′-Deoxythymidine Conjugate that Potentially Kills Cancer Cells Selectively." December 2012PLoS ONE 7(12):e52199.
 '''
 ```
 
-
+Start with everything you will need to import for this example.
 ```python
 import matplotlib.pyplot as plt
 import skimage.io
@@ -22,7 +27,7 @@ from skimage.measure import regionprops
 from skimage.color import rgb2gray
 ```
 
-
+Load images from the paper.  Just the three HepG2 images for this example.
 ```python
 #First, load in images.
 #We have for this example: nuclear staining and BrdU staining
@@ -35,6 +40,7 @@ imgs_nuc = [skimage.io.imread(join(mypath, x)) for x in nuc_filenames]
 imgs_brdu = [skimage.io.imread(join(mypath, x)) for x in nuc_filenames]
 ```
 
+I decided to use Cellpose for this example.  Cellpose is "a generalist algorith for cell segmentation" that uses machine learning to segment either nuclei or cell bodies from brightfield or flouresence images.  The HUGE advantage of using this library is that they have a great repository of training data. They also recently released Cellpose 2.0 that allows for an interactive adjustment of the training data.  The user interface they generated is also great for testing out the different models.  Extremely helpful tool that quickly allows us to find the nuclei.  https://www.cellpose.org/.
 
 ```python
 #segment nuclei using Cellpose and Meausure BrdU intensity 
@@ -87,6 +93,7 @@ df["BrdU Mean Intensity (AU)"] = brdu_intensity_all
 #remove .tif ending from Cell Line column
 df["Cell Line"] = df["Cell Line"].str.rstrip('.tif')
 ```
+And here is an example of the output.  We see the time to perform the segmentaion, and we can look at the predicted outlines and flows.
 
     >>>> using CPU
     Running test snippet to check if MKL-DNN working
@@ -102,31 +109,7 @@ df["Cell Line"] = df["Cell Line"].str.rstrip('.tif')
     
 ![png](output_3_1.png)
     
-
-
-    processing 1 image(s)
-    time spent: running network 15.93s; flow+mask computation 0.41
-    estimated masks for 1 image(s) in 16.36 sec
-    >>>> TOTAL TIME 16.36 sec
-
-
-
-    
-![png](output_3_3.png)
-    
-
-
-    processing 1 image(s)
-    time spent: running network 15.62s; flow+mask computation 0.49
-    estimated masks for 1 image(s) in 16.13 sec
-    >>>> TOTAL TIME 16.13 sec
-
-
-
-    
-![png](output_3_5.png)
-    
-
+Although it's not particularly interesting for this example, I'm putting here a reminder that we can measure off of the masks.  Here I have plotted the area of the nuclei, and this kind of measuremnet (using regionprops) allows you to measure several parameters about the masks.  If there are features that are not outputs from regionprops, you can also add your own calculations using extra_properties.  
 
 
 ```python
@@ -152,7 +135,7 @@ ax.set_title("Nuclei Area")
 ![png](output_4_1.png)
     
 
-
+We also used the positions of the masks to measure the intensity of the corresponding BrdU image (using region props with the masks and intensity image).  As a first pass looking at the data, it's helpful to visualize all of the data.  We see that there is a distribution of average BrdU intensity in all of the conditions, but the intensity in the control is shifted higher than the two treatment groups. 
 
 ```python
 #plot BrdU Intensity measurements
@@ -169,7 +152,7 @@ ax.get_legend().remove()
 ![png](output_5_0.png)
     
 
-
+Finally, we can calculate the percent of nuceli in the field that are BrdU positive by using an intensity threshold value.  The BrdU assay works by pulsing the cells with a labeld nucleotide that is incorporated into cells that are in the process of dividing (S-phase).  The more the cells are synthesizing DNA with this labeled nucleotide, the brighter the signal will be.  Ideally we would have a control with no BrdU but did have all of the other stains (e.g. the nuclear stain in this case) so we could measure the background of the nuclear stain into the BrdU image.  But in this case, that image was not available so we made a guess at what a good threshold value should be.  Looking at the images, I decided to use a value of 80.  This arbitrary cutoff is not ideal, but is still a good exmaple of how to apply a threshold to data in this format.
 
 ```python
 #Find the percent that are BrdU positive
@@ -190,8 +173,6 @@ ax.get_legend().remove()
 ![png](output_6_0.png)
     
 
+As we saw qualitatively, the measurements show that there are fewer cells in the process of dividing with the treatment than in the DMSO control.
 
 
-```python
-
-```
